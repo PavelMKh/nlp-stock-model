@@ -7,13 +7,20 @@ from psycopg2 import sql, Error, extras
 
 LIST_OF_TICKERS_1 = ['AAPL','META', 'NVDA', 'AMD', 'GOOG', 'XOM', 'MCD', 'KO', 'PFE', 'PG']
 
-LIST_OF_TICKERS_2 = ['MSFT', 'AMZN', 'TSLA', 'GOOGL', 'JPM', 'JNJ', 'V', 'UNH', 'HD', 'DIS', 'NFLX', 'VZ', 'INTC', 'CMCSA', 'PEP', 'T', 'MRK', 'CSCO']
+LIST_OF_TICKERS_2 = ['MSFT', 'AMZN', 'TSLA', 'GOOGL', 'JPM', 'JNJ', 'V', 'CMCSA', 'PEP', 'T', 'CSCO', 'DIS', 'NKE', 'VZ', 'HD', 'UNH', 'CRM', 'NFLX', 'INTC', 
+                     'BA', 'MRK', 'LMT', 'GILD', 'SBUX']
 
-LIST_OF_TICKERS_3 = ['DIS', 'TSLA', 'NKE', 'AMZN', 'VZ', 'JNJ', 'HD', 'PFE', 'UNH', 'T', 'CRM', 'NFLX', 'KO', 'INTC', 
-                     'CSCO', 'XOM', 'BA', 'MRK', 'LMT', 'AMD', 'GILD', 'SBUX', 'ADBE', 'CAT', 'QCOM']
+LIST_OF_TICKERS_3 = ['AMGN', 'IBM', 'HON', 'PYPL', 'LRCX', 'MDLZ', 'BKNG', 'FDX', 'EOG', 'CIM', 'DVN', 'MPC', 'CHK', 
+                     'RRC', 'NOG', 'ADBE', 'CAT', 'QCOM']
 
-LIST_OF_TICKERS_4 = ['AMGN', 'IBM', 'HON', 'PYPL','LRCX','ADP', 'TMO','MDLZ', 'CVS','SPGI', 'FISV','ZTS',
-                     'CARR','BKNG','SYK','CCL', 'DHR','MDT', 'SYY','AON', 'TROW','RMD', 'DOV','ECL', 'FDX']
+LIST_OF_TICKERS_5 = ["VRTX", "ETN", "BSX", "MDT", "ADI", "ANET", "PANW", "ADP", "KLAC", "BUD", "DE", "MELI", 
+                      "SHOP", "FI", "BMY", "SO", "SHW", "DUK", "MAR", "DHI", "MRVL", "APD"]
+
+LIST_OF_TICKERS_6 = ["CL", "WM", "SNPS", "SCCO", "ZTS", "APH", "DELL", "CTAS", "PH", "CMG", "ITW", "TGT", "MSI", "MCK", 
+                     "ECL", "CSX", "CRWD", "ORLY", "CARR", "FCX", "SLB", "EPD", "CEG"]
+
+LIST_OF_TICKERS_7 = ["NEM", "GM", "F", "NSC", "HLT", "AZO", "DASH", "AEP", "SRE", "LEN", "PCAR", "GEV", "CHTR", "WCN", "GWW", 
+                      "D", "KMI", "PAYX", "STZ", "ODFL", "KHC", "FERG"]
 
 CREATE_TABLE_SQL = """create table if not exists companies (
                     ticker VARCHAR(30) PRIMARY KEY NOT NULL,
@@ -55,9 +62,9 @@ def main():
     while True:
         export_method = int(input("Enter your command >> "))
         if export_method == 1:
-            companies_to_csv(api_key, LIST_OF_TICKERS_1)
+            companies_to_csv(api_key, LIST_OF_TICKERS_8)
         elif export_method == 2:
-            companies_to_db(api_key, LIST_OF_TICKERS_1)
+            companies_to_db(api_key, LIST_OF_TICKERS_8)
         elif export_method == 3:
             print("Thanks for using our app!")
             break
@@ -73,22 +80,25 @@ def companies_to_csv(api_key, tickers):
 def companies_to_db(api_key, tickers):
     user, password, host, port, database = get_connection_parameters()
     create_table(user, password, host, port, database, CREATE_TABLE_SQL)
-    result = get_companies_df(api_key, tickers)
-    save_to_database(user, password, host, port, database, result, INSERT_SQL)
-
-def get_companies_df(api_key, tickers):
-    result = pd.DataFrame()
     for ticker in tickers:
-      json_data = request_company(api_key, ticker)
-      df  = pd.DataFrame.from_dict(json_data, orient='index').T
-      df.rename(columns={
+       try:
+        result = get_companies_df(api_key, ticker)
+        save_to_database(user, password, host, port, database, result, INSERT_SQL)
+       except Exception as e:
+        print(f"Error with ticker processing {ticker}: {e}")
+
+def get_companies_df(api_key, ticker):
+    result = pd.DataFrame()
+    json_data = request_company(api_key, ticker)
+    df  = pd.DataFrame.from_dict(json_data, orient='index').T
+    df.rename(columns={
         'Symbol':'ticker'}, inplace=True)
-      df['CIK'] = df['CIK'].astype(str).str.zfill(10)
-      df.reset_index(inplace=True)
-      df_res = df[['ticker', 'AssetType', 'Name', 'Description',
+    df['CIK'] = df['CIK'].astype(str).str.zfill(10)
+    df.reset_index(inplace=True)
+    df_res = df[['ticker', 'AssetType', 'Name', 'Description',
                    'CIK', 'Exchange', 'Currency', 'Country',
                    'Sector', 'Industry', 'Address', 'FiscalYearEnd']]
-      result = pd.concat([result, df_res], ignore_index=True)
+    result = pd.concat([result, df_res], ignore_index=True)
     return result
 
 def request_company(api_key, ticker):

@@ -7,17 +7,17 @@ import logging
 
 ROOT_DIRECTORY = '/Users/pavel/Documents/SEC_DATA/'
 
-LIST_OF_TICKERS_1 = ['AAPL', 'META', 'NVDA', 'AMD', 'GOOG', 'XOM', 'MCD', 'KO', 'PFE', 'PG']
-
-LIST_OF_TICKERS_2 = ['MSFT', 'AMZN', 'TSLA', 'GOOGL', 'JPM', 'JNJ', 'V', 'UNH', 'HD', 'DIS', 'NFLX', 'VZ', 'INTC', 'CMCSA', 'PEP', 'T', 'MRK', 'CSCO']
-
-LIST_OF_TICKERS_3 = ['DIS', 'TSLA', 'NKE', 'AMZN', 'VZ', 'JNJ', 'HD', 'PFE', 'UNH', 'T', 'CRM', 'NFLX', 'KO', 'INTC', 
-                     'CSCO', 'XOM', 'BA', 'MRK', 'LMT', 'AMD', 'GILD', 'SBUX', 'ADBE', 'CAT', 'QCOM']
-
-LIST_OF_TICKERS_4 = ['AMGN', 'IBM', 'HON', 'PYPL','LRCX','ADP', 'TMO','MDLZ', 'CVS','SPGI', 'FISV','ZTS',
-                     'CARR','BKNG','SYK','CCL', 'DHR','MDT', 'SYY','AON', 'TROW','RMD', 'DOV','ECL', 'FDX']
-
-LIST_OF_TICKERS_5 = ['EOG', 'CIM', 'PXD', 'NBL', 'DVN', 'MPC', 'CHK', 'CDEV', 'RRC', 'NOG']
+LIST_OF_TICKERS = ['AAPL','META', 'NVDA', 'AMD', 'GOOG', 'XOM', 'MCD', 'KO', 'PFE', 'PG',
+                     'MSFT', 'AMZN', 'TSLA', 'GOOGL', 'JPM', 'JNJ', 'V', 'CMCSA', 'PEP', 'T', 'CSCO', 'DIS', 'NKE', 'VZ', 'HD', 'UNH', 'CRM', 'NFLX', 'INTC', 
+                     'BA', 'MRK', 'LMT', 'GILD', 'SBUX',
+                     'AMGN', 'IBM', 'HON', 'PYPL', 'LRCX', 'MDLZ', 'BKNG', 'FDX', 'EOG', 'CIM', 'DVN', 'MPC', 'CHK', 
+                     'RRC', 'NOG', 'ADBE', 'CAT', 'QCOM',
+                     "VRTX", "ETN", "BSX", "MDT", "ADI", "ANET", "PANW", "ADP", "KLAC", "BUD", "DE", "MELI", 
+                      "SHOP", "FI", "BMY", "SO", "SHW", "DUK", "MAR", "DHI", "MRVL", "APD",
+                      "CL", "WM", "SNPS", "SCCO", "ZTS", "APH", "DELL", "CTAS", "PH", "CMG", "ITW", "TGT", "MSI", "MCK", 
+                     "ECL", "CSX", "CRWD", "ORLY", "CARR", "FCX", "SLB", "EPD", "CEG",
+                     "NEM", "GM", "F", "NSC", "HLT", "AZO", "DASH", "AEP", "SRE", "LEN", "PCAR", "GEV", "CHTR", "WCN", "GWW", 
+                      "D", "KMI", "PAYX", "STZ", "ODFL", "KHC", "FERG"]
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -39,9 +39,9 @@ def main():
     while True:
         export_method = int(input("Enter your command >> "))
         if export_method == 1:
-            reports_to_csv(LIST_OF_TICKERS_3)
+            reports_to_csv(LIST_OF_TICKERS)
         elif export_method == 2:
-            reports_to_db(LIST_OF_TICKERS_3)
+            reports_to_db(LIST_OF_TICKERS)
         elif export_method == 3:
             print("Thanks for using our app!")
             break
